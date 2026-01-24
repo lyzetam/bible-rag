@@ -1,0 +1,31 @@
+[project]
+name = "bible-rag"
+version = "0.1.0"
+description = "RAG pipeline for Bible verses by mood/feeling"
+requires-python = ">=3.10"
+dependencies = [
+    "supabase>=2.0.0",
+    "httpx>=0.27.0",
+    "ollama>=0.4.0",
+    "rich>=13.0.0",
+    # Agent
+    "langchain-anthropic>=0.3.0",
+    "langchain-core>=0.3.0",
+    "langgraph>=0.2.0",
+    # API
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
+]
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+bible-load = "bible_rag.load:main"
+bible = "bible_rag.query:main"
+bible-chat = "bible_rag.agent:main"
+bible-serve = "bible_rag.api:serve"

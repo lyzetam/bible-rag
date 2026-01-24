@@ -92,3 +92,15 @@ class BibleService:
             .execute()
         )
         return result.data
+
+    def get_cross_references(self, reference: str, limit: int = 10) -> list[dict]:
+        """Get cross-references for a verse, ordered by relevance (votes)."""
+        result = (
+            self.client.table("bible_cross_references")
+            .select("to_reference, votes")
+            .eq("from_reference", reference)
+            .order("votes", desc=True)
+            .limit(limit)
+            .execute()
+        )
+        return result.data

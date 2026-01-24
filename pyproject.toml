@@ -26,6 +26,7 @@ build-backend = "hatchling.build"
 
 [project.scripts]
 bible-load = "bible_rag.load:main"
+bible-load-xrefs = "bible_rag.load_xrefs:main"
 bible = "bible_rag.query:main"
 bible-chat = "bible_rag.agent:main"
 bible-serve = "bible_rag.api:serve"

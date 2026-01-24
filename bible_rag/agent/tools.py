@@ -123,6 +123,33 @@ def get_verse_by_reference(reference: str) -> str:
     return f"**{verse['reference']}**\n{verse['text']}"
 
 
+@tool
+def get_cross_references(reference: str, limit: int = 5) -> str:
+    """Get related verses that connect to a specific verse.
+
+    Use this tool when you want to show how a verse connects to other parts
+    of Scripture, or to provide additional supporting passages.
+
+    Args:
+        reference: The verse reference (e.g., "Philippians 4:6", "John 3:16")
+        limit: Maximum number of cross-references to return (default: 5)
+
+    Returns:
+        List of related verse references with relevance scores
+    """
+    service = BibleService()
+    results = service.get_cross_references(reference, limit=limit)
+
+    if not results:
+        return f"No cross-references found for {reference}"
+
+    output = [f"**Verses connected to {reference}:**\n"]
+    for xref in results:
+        output.append(f"- {xref['to_reference']} (relevance: {xref['votes']})")
+
+    return "\n".join(output)
+
+
 def get_all_tools() -> list:
     """Get all available tools for the Bible agent."""
     return [
@@ -130,4 +157,5 @@ def get_all_tools() -> list:
         search_curated_verses,
         get_verse_context,
         get_verse_by_reference,
+        get_cross_references,
     ]

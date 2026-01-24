@@ -21,16 +21,16 @@ MODELS = {
     # Large model for complex generation (book summaries, verse insights)
     "large": "gemma3:27b",
     # Medium model for moderate tasks (chapter summaries)
-    "medium": "deepseek-r1:14b",
+    "medium": "gemma3:27b",
     # Small/fast model for classification (emotion tagging)
     "small": "gemma3:4b",
     # Embedding model (needs to be pulled: ollama pull nomic-embed-text)
     "embedding": "nomic-embed-text",
 }
 
-# Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://zzdwykxtcxcahxtzojtw.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+# Supabase - Bible project
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rehpmoxczibgkwcawelo.supabase.co")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlaHBtb3hjemliZ2t3Y2F3ZWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyOTM3NTksImV4cCI6MjA4NDg2OTc1OX0.TW6ukZSPs0GqhwiuffIQU-acrdgTjJzToq8d1htgW_g")
 
 # Batch processing
 BATCH_SIZE = 10

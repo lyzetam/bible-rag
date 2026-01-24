@@ -36,15 +36,31 @@ Return ONLY the JSON."""
 
 def get_chapters_to_process(supabase) -> list[dict]:
     """Get list of all chapters from verse data."""
-    result = supabase.table("bible_verses").select("book, chapter").execute()
-
-    # Aggregate unique book/chapter combinations
+    # Paginate to get all 31k verses
     chapters = {}
-    for row in result.data:
-        key = (row["book"], row["chapter"])
-        if key not in chapters:
-            chapters[key] = {"book": row["book"], "chapter": row["chapter"], "count": 0}
-        chapters[key]["count"] += 1
+    offset = 0
+    batch_size = 1000
+
+    while True:
+        result = (
+            supabase.table("bible_verses")
+            .select("book, chapter")
+            .range(offset, offset + batch_size - 1)
+            .execute()
+        )
+
+        if not result.data:
+            break
+
+        for row in result.data:
+            key = (row["book"], row["chapter"])
+            if key not in chapters:
+                chapters[key] = {"book": row["book"], "chapter": row["chapter"], "count": 0}
+            chapters[key]["count"] += 1
+
+        if len(result.data) < batch_size:
+            break
+        offset += batch_size
 
     return sorted(chapters.values(), key=lambda x: (x["book"], x["chapter"]))
 
@@ -86,7 +102,7 @@ def generate_chapter_summary(book: str, chapter: int, verse_count: int, sample_v
                     "stream": False,
                     "options": {"temperature": 0.3},
                 },
-                timeout=60,
+                timeout=180,
             )
             response.raise_for_status()
             result = response.json()["response"]

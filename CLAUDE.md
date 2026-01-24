@@ -53,14 +53,22 @@ uv run bible-serve              # API on port 8010
 ## Environment
 
 ```bash
-# .env
-SUPABASE_URL=https://zzdwykxtcxcahxtzojtw.supabase.co
+# .env (optional - defaults are built-in)
+SUPABASE_URL=https://rehpmoxczibgkwcawelo.supabase.co
 SUPABASE_KEY=your_anon_key
 OLLAMA_URL=http://10.85.30.20:11434  # Mac Studio
 ANTHROPIC_API_KEY=your_key           # For agent
 ```
 
-## Database Schema (Supabase Phoenix)
+## Supabase Project
+
+| Field | Value |
+|-------|-------|
+| Project | Bible (dedicated) |
+| Ref | `rehpmoxczibgkwcawelo` |
+| URL | `https://rehpmoxczibgkwcawelo.supabase.co` |
+
+## Database Schema
 
 | Table | Purpose |
 |-------|---------|

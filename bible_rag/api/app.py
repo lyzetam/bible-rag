@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from ..agent.factory import get_bible_support_agent, run_agent
 from ..services.bible import BibleService
+from bible_toolkit.core import BibleClient
 
 app = FastAPI(
     title="Bible RAG API",
@@ -141,5 +142,80 @@ async def get_verse(reference: str):
         }
     except HTTPException:
         raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# === Emotion-based Search (no Ollama required) ===
+
+
+class EmotionVerse(BaseModel):
+    """Model for a verse found by emotion search."""
+
+    reference: str
+    text: str
+    emotions: list[str]
+    confidence: float
+
+
+class EmotionSearchResponse(BaseModel):
+    """Response model for emotion search."""
+
+    emotion: str
+    verses: list[EmotionVerse]
+
+
+class EmotionListResponse(BaseModel):
+    """Response model for listing available emotions."""
+
+    emotions: list[str]
+    total: int
+
+
+@app.get("/emotions", response_model=EmotionListResponse)
+async def list_emotions():
+    """List all available emotion search terms.
+
+    These terms expand to related emotions in the database.
+    For example, 'depression' expands to sorrow, despair, sadness, etc.
+    """
+    try:
+        client = BibleClient()
+        emotions = client.get_available_emotions()
+        return EmotionListResponse(emotions=emotions, total=len(emotions))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/emotions/{emotion}", response_model=EmotionSearchResponse)
+async def search_by_emotion(emotion: str, limit: int = 10):
+    """Search for Bible verses by emotion.
+
+    This endpoint uses pre-computed emotion tags and does NOT require Ollama.
+    Common search terms are automatically expanded to related emotions:
+    - 'depression' → sorrow, despair, sadness, grief, discouragement, anguish
+    - 'worried' → worry, anxiety, fear, concern, uncertainty
+    - 'hopeless' → despair, hopelessness, discouragement, anguish
+
+    Use GET /emotions to see all available search terms.
+    """
+    try:
+        client = BibleClient()
+        results = client.search_by_emotion(emotion, limit=limit)
+
+        # Enrich with verse text
+        verses = []
+        for r in results:
+            verse_data = client.get_verse(r["reference"])
+            verses.append(
+                EmotionVerse(
+                    reference=r["reference"],
+                    text=verse_data["text"] if verse_data else "",
+                    emotions=r["emotions"],
+                    confidence=r["confidence"],
+                )
+            )
+
+        return EmotionSearchResponse(emotion=emotion, verses=verses)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

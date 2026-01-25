@@ -19,12 +19,13 @@ if env_file.exists():
             os.environ.setdefault(key.strip(), value.strip())
 
 # Bible Supabase config - use BIBLE_* prefix to avoid conflicts with other Supabase projects
-# Priority: BIBLE_SUPABASE_URL > SUPABASE_URL > hardcoded default
+# Uses ONLY BIBLE_SUPABASE_URL or hardcoded default - ignores generic SUPABASE_URL
+# This prevents conflicts when the Bible toolkit is used alongside other Supabase projects
 BIBLE_SUPABASE_URL_DEFAULT = "https://rehpmoxczibgkwcawelo.supabase.co"
 BIBLE_SUPABASE_KEY_DEFAULT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlaHBtb3hjemliZ2t3Y2F3ZWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyOTM3NTksImV4cCI6MjA4NDg2OTc1OX0.TW6ukZSPs0GqhwiuffIQU-acrdgTjJzToq8d1htgW_g"
 
-SUPABASE_URL = os.getenv("BIBLE_SUPABASE_URL") or os.getenv("SUPABASE_URL", BIBLE_SUPABASE_URL_DEFAULT)
-SUPABASE_KEY = os.getenv("BIBLE_SUPABASE_KEY") or os.getenv("SUPABASE_KEY", BIBLE_SUPABASE_KEY_DEFAULT)
+SUPABASE_URL = os.getenv("BIBLE_SUPABASE_URL", BIBLE_SUPABASE_URL_DEFAULT)
+SUPABASE_KEY = os.getenv("BIBLE_SUPABASE_KEY", BIBLE_SUPABASE_KEY_DEFAULT)
 OLLAMA_URL = os.getenv("BIBLE_OLLAMA_URL") or os.getenv("OLLAMA_URL", "http://10.85.30.20:11434")
 
 # Map common search terms to actual emotion tags in the database

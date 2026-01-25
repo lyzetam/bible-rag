@@ -44,24 +44,40 @@ Return ONLY the JSON."""
 
 def get_top_verses(supabase, limit: int) -> list[dict]:
     """Get the most cross-referenced verses."""
-    # Count cross-references per verse
-    result = supabase.rpc(
-        "get_top_referenced_verses",
-        {"limit_count": limit}
-    ).execute()
+    # Try RPC first (if function exists)
+    try:
+        result = supabase.rpc(
+            "get_top_referenced_verses",
+            {"limit_count": limit}
+        ).execute()
+        if result.data:
+            return result.data
+    except Exception:
+        pass
 
-    if result.data:
-        return result.data
-
-    # Fallback: manual query
+    # Fallback: manual query with pagination
     console.print("[yellow]Using fallback query for top verses...[/yellow]")
-    result = supabase.table("bible_cross_references").select("from_reference").execute()
-
-    # Count occurrences
     counts = {}
-    for row in result.data:
-        ref = row["from_reference"]
-        counts[ref] = counts.get(ref, 0) + 1
+    offset = 0
+    batch_size = 1000
+
+    while True:
+        result = (
+            supabase.table("bible_cross_references")
+            .select("from_reference")
+            .range(offset, offset + batch_size - 1)
+            .execute()
+        )
+        if not result.data:
+            break
+
+        for row in result.data:
+            ref = row["from_reference"]
+            counts[ref] = counts.get(ref, 0) + 1
+
+        if len(result.data) < batch_size:
+            break
+        offset += batch_size
 
     # Get top N
     top_refs = sorted(counts.items(), key=lambda x: -x[1])[:limit]

@@ -1,52 +1,100 @@
-# Bible RAG
+# Bible Toolkit
 
-Semantic search for Bible verses by mood, feeling, or topic using pgvector.
+A Python library for accessing enriched Bible data with semantic search, cross-references, and AI-generated insights.
 
-## Setup
+## Features
+
+- **Semantic Search** - Find verses by meaning, not just keywords
+- **Cross-References** - 344k verse connections from Treasury of Scripture Knowledge
+- **Book Metadata** - Author, theme, summary, key verses for all 66 books
+- **Chapter Summaries** - AI-generated summaries for 1,189 chapters
+- **Verse Insights** - Explanations and applications for top 500 verses
+- **Emotion Tags** - Search verses by emotion (hope, comfort, fear, etc.)
+
+## Installation
 
 ```bash
-# Install dependencies
-cd ~/dev/bible-rag
-uv sync
+# Add to your project
+uv add git+https://github.com/lyzetam/bible-rag.git
 
-# Set Supabase key (get from dashboard)
-export SUPABASE_KEY="your_anon_key"
-
-# Ensure Ollama has the embedding model
-ollama pull nomic-embed-text
-
-# Load Bible into Supabase (one-time, ~31k verses)
-uv run bible-load
+# Or with pip
+pip install git+https://github.com/lyzetam/bible-rag.git
 ```
 
-## Usage
+## Quick Start
+
+```python
+from bible_toolkit.core import BibleClient
+
+client = BibleClient()
+
+# Semantic search
+verses = client.search("feeling anxious", limit=5)
+for v in verses:
+    print(f"{v['reference']}: {v['text']}")
+
+# Get cross-references
+xrefs = client.get_cross_references("Philippians 4:6")
+
+# Get book metadata
+book = client.get_book("Philippians")
+print(f"Theme: {book['theme']}")
+
+# Get chapter summary
+summary = client.get_chapter_summary("Philippians", 4)
+print(summary['summary'])
+
+# Search by emotion
+hopeful_verses = client.search_by_emotion("hope", limit=10)
+```
+
+## Data Overview
+
+| Data | Count | Description |
+|------|-------|-------------|
+| Verses | 31,100 | Full KJV Bible with 768-dim embeddings |
+| Cross-References | 344,799 | Treasury of Scripture Knowledge |
+| Books | 66 | Enriched with author, theme, summary |
+| Chapter Summaries | 1,189 | AI-generated summaries and themes |
+| Verse Insights | 500 | Explanations for top referenced verses |
+| Emotion Tags | 31,100 | All verses classified by emotion |
+
+## Configuration
+
+The library works out of the box with the hosted Supabase database. For custom deployments:
 
 ```bash
-# Interactive mode
-uv run bible
+# Optional environment variables
+export SUPABASE_URL=https://your-project.supabase.co
+export SUPABASE_KEY=your-anon-key
+export OLLAMA_URL=http://localhost:11434  # For semantic search
+```
 
-# Direct query
+## Requirements
+
+- Python 3.10+
+- Ollama with `nomic-embed-text` model (for semantic search)
+- Network access to Supabase
+
+## Documentation
+
+- [API Reference](docs/api-reference.md) - Complete method documentation
+- [Architecture](docs/architecture.md) - System design and data flow
+- [Integration Guide](docs/integration-guide.md) - Using in your projects
+
+## CLI Tools
+
+```bash
+# Interactive search
 uv run bible "feeling overwhelmed"
-uv run bible "need courage"
-uv run bible "thankful and grateful"
+
+# Chat with Bible agent
+uv run bible-chat
+
+# Start API server
+uv run bible-serve
 ```
 
-## Example Queries
+## License
 
-- "feeling anxious and worried"
-- "need strength and courage"
-- "overwhelmed by life"
-- "seeking peace"
-- "feeling alone"
-- "grateful and thankful"
-- "need hope"
-- "facing fear"
-- "forgiveness"
-- "love and patience"
-
-## Architecture
-
-- **Database**: Supabase (Phoenix project) with pgvector
-- **Embeddings**: Ollama nomic-embed-text (768 dimensions)
-- **Source**: KJV Bible (public domain)
-- **Verses**: ~31,102 verses indexed
+Private - Internal use only.

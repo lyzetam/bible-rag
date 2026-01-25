@@ -110,16 +110,21 @@ def main():
     existing_count = existing.count or 0
 
     if existing_count > 0:
-        console.print(f"[yellow]Found {existing_count} existing tags.[/yellow]")
+        console.print(f"[yellow]Found {existing_count} existing tags. Continuing...[/yellow]")
         if existing_count >= total_verses:
             console.print("[green]All verses already tagged![/green]")
             return
-        if not console.input(f"Continue from where we left off? [Y/n]: ").lower().startswith("n"):
-            # Get references that are already tagged
-            tagged = supabase.table("bible_emotion_tags").select("reference").execute()
-            tagged_refs = {row["reference"] for row in tagged.data}
-        else:
-            tagged_refs = set()
+        # Auto-continue from where we left off (no prompt for background jobs)
+        tagged_refs = set()
+        offset = 0
+        while True:
+            tagged = supabase.table("bible_emotion_tags").select("reference").range(offset, offset + 999).execute()
+            if not tagged.data:
+                break
+            tagged_refs.update(row["reference"] for row in tagged.data)
+            if len(tagged.data) < 1000:
+                break
+            offset += 1000
     else:
         tagged_refs = set()
 

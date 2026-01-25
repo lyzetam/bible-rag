@@ -395,6 +395,149 @@ emotions = client.get_available_emotions()
 
 ---
 
+## REST API
+
+Start the server with `uv run bible-serve` (runs on port 8010).
+
+### GET /emotions
+
+List all 87 searchable emotion terms.
+
+**Request:**
+```
+GET /emotions
+```
+
+**Response:**
+```json
+{
+  "emotions": [
+    "abandoned", "afraid", "alone", "anger", "anxious",
+    "depressed", "hopeful", "lonely", "worried", "..."
+  ],
+  "total": 87
+}
+```
+
+---
+
+### GET /emotions/{emotion}
+
+Search for verses by emotion. Supports synonym expansion.
+
+**Request:**
+```
+GET /emotions/depression?limit=3
+```
+
+**Response:**
+```json
+{
+  "emotion": "depression",
+  "verses": [
+    {
+      "reference": "Psalms 22:1",
+      "text": "My God, my God, why hast thou forsaken me? far from helping me, the words of my roaring?",
+      "emotions": ["sorrow", "fear", "doubt"],
+      "confidence": 0.98
+    },
+    {
+      "reference": "Matthew 27:50",
+      "text": "Jesus, when he had cried again with a loud voice, yielded up the ghost.",
+      "emotions": ["sorrow", "anguish", "fear"],
+      "confidence": 1.0
+    }
+  ]
+}
+```
+
+**Another example - hopeful:**
+```
+GET /emotions/hopeful?limit=2
+```
+
+```json
+{
+  "emotion": "hopeful",
+  "verses": [
+    {
+      "reference": "Joel 3:16",
+      "text": "The LORD also shall roar out of Zion, and utter his voice from Jerusalem; and the heavens and the earth shall shake: but the LORD the hope of his people, and the strength of the children of Israel.",
+      "emotions": ["hope", "strength", "faith"],
+      "confidence": 0.98
+    }
+  ]
+}
+```
+
+---
+
+### GET /verses/{reference}
+
+Get a specific verse by reference.
+
+**Request:**
+```
+GET /verses/John%203:16
+```
+
+**Response:**
+```json
+{
+  "reference": "John 3:16",
+  "text": "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
+  "book": "John",
+  "chapter": 3,
+  "verse": 16
+}
+```
+
+---
+
+### GET /verses/search
+
+Semantic search for verses (requires Ollama).
+
+**Request:**
+```
+GET /verses/search?query=feeling%20anxious&limit=3
+```
+
+**Response:**
+```json
+{
+  "query": "feeling anxious",
+  "verses": [
+    {
+      "reference": "Philippians 4:6",
+      "text": "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.",
+      "similarity": 0.82
+    }
+  ]
+}
+```
+
+---
+
+### GET /health
+
+Health check endpoint.
+
+**Request:**
+```
+GET /health
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "service": "bible-rag"
+}
+```
+
+---
+
 ## Data Models
 
 The library includes Pydantic models for type safety:

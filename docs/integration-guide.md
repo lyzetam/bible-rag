@@ -2,6 +2,15 @@
 
 How to use Bible Toolkit in your projects.
 
+## Two Search Modes
+
+| Mode | Requires Ollama | Best For |
+|------|-----------------|----------|
+| **Emotion Search** | No | Finding verses by feeling (depression, anxious, hopeful) |
+| **Semantic Search** | Yes | Natural language queries ("how to find peace when stressed") |
+
+**Recommendation:** Start with emotion search - it's simpler and works without Ollama.
+
 ## Installation
 
 ### Using uv (recommended)
@@ -53,7 +62,18 @@ from bible_toolkit.core import BibleClient
 # Initialize (uses default Supabase instance)
 client = BibleClient()
 
-# Search by meaning
+# Emotion search (no Ollama required)
+verses = client.search_by_emotion("depression", limit=5)
+verses = client.search_by_emotion("anxious", limit=5)
+
+# See what an emotion expands to
+client.get_emotion_synonyms("depression")
+# → ['sorrow', 'despair', 'sadness', 'grief', 'discouragement', 'anguish']
+
+# List all 87 searchable emotions
+emotions = client.get_available_emotions()
+
+# Semantic search (requires Ollama)
 verses = client.search("need strength and courage", limit=5)
 
 # Get a specific verse

@@ -85,14 +85,38 @@ export OLLAMA_URL=http://localhost:11434  # For semantic search
 ## CLI Tools
 
 ```bash
-# Interactive search
+# Semantic search (requires Ollama)
 uv run bible "feeling overwhelmed"
+
+# Emotion search (no Ollama required)
+uv run bible -e depression
+uv run bible -e anxious
+uv run bible --emotions              # List all 87 searchable emotions
 
 # Chat with Bible agent
 uv run bible-chat
 
-# Start API server
+# Start API server (port 8010)
 uv run bible-serve
+```
+
+## API Endpoints
+
+```bash
+# Start server
+uv run bible-serve
+
+# Emotion search (no Ollama required)
+curl "http://localhost:8010/emotions/depression?limit=5"
+
+# List available emotions
+curl "http://localhost:8010/emotions"
+
+# Semantic search (requires Ollama)
+curl "http://localhost:8010/verses/search?query=feeling+anxious&limit=5"
+
+# Get specific verse
+curl "http://localhost:8010/verses/John%203:16"
 ```
 
 ## License

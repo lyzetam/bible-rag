@@ -308,14 +308,17 @@ if insight:
 
 ## Emotion Tags
 
+Emotion search uses pre-computed tags and **does not require Ollama**. Common search terms are automatically expanded to related emotions in the database.
+
 ### search_by_emotion()
 
-Find verses tagged with a specific emotion.
+Find verses tagged with a specific emotion. Supports synonym expansion.
 
 ```python
 def search_by_emotion(
     emotion: str,
-    limit: int = 10
+    limit: int = 10,
+    expand_synonyms: bool = True
 ) -> list[dict]
 ```
 
@@ -324,25 +327,70 @@ def search_by_emotion(
 |------|------|---------|-------------|
 | `emotion` | str | required | Emotion to search for |
 | `limit` | int | 10 | Maximum results |
+| `expand_synonyms` | bool | True | Expand to related emotions |
 
-**Available emotions:** hope, joy, peace, comfort, strength, fear, sorrow, anger, love, gratitude, wisdom, faith
+**Synonym Expansion Examples:**
+| Search Term | Expands To |
+|-------------|------------|
+| `depression` | sorrow, despair, sadness, grief, discouragement, anguish |
+| `worried` | worry, anxiety, fear, concern, uncertainty |
+| `hopeless` | despair, hopelessness, discouragement, anguish |
+| `lonely` | loneliness, isolation, abandonment, alienation |
+| `happy` | joy, happiness, gladness, delight, contentment |
+| `scared` | fear, terror, dread, panic, anxiety |
 
 **Example:**
 ```python
-verses = client.search_by_emotion("hope", limit=5)
+# Search with synonym expansion (default)
+verses = client.search_by_emotion("depression", limit=5)
 for v in verses:
     print(f"{v['reference']}: {v['emotions']} ({v['confidence']:.0%})")
+
+# Direct search without expansion
+verses = client.search_by_emotion("sorrow", limit=5, expand_synonyms=False)
 ```
 
 **Response:**
 ```python
 [
     {
-        "reference": "Romans 15:13",
-        "emotions": ["hope", "joy", "peace"],
-        "confidence": 0.95
+        "reference": "Psalms 22:1",
+        "emotions": ["sorrow", "fear", "doubt"],
+        "confidence": 0.98
     }
 ]
+```
+
+---
+
+### get_emotion_synonyms()
+
+Get the list of emotion tags that a search term maps to.
+
+```python
+def get_emotion_synonyms(emotion: str) -> list[str]
+```
+
+**Example:**
+```python
+synonyms = client.get_emotion_synonyms("depression")
+# Returns: ['sorrow', 'despair', 'sadness', 'grief', 'discouragement', 'anguish', 'hopelessness']
+```
+
+---
+
+### get_available_emotions()
+
+Get all 87 searchable emotion terms.
+
+```python
+def get_available_emotions() -> list[str]
+```
+
+**Example:**
+```python
+emotions = client.get_available_emotions()
+# Returns: ['abandoned', 'afraid', 'alone', 'anger', 'angry', ...]
 ```
 
 ---

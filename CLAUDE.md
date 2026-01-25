@@ -45,10 +45,24 @@ uv run python -m bible_toolkit.enrichment.03_verse_insights
 uv run python -m bible_toolkit.enrichment.04_emotion_tags
 
 # CLI tools
-uv run bible "feeling anxious"
-uv run bible-chat --persona companion
-uv run bible-serve              # API on port 8010
+uv run bible "feeling anxious"           # Semantic search (requires Ollama)
+uv run bible -e depression               # Emotion search (no Ollama needed)
+uv run bible -e anxious -n 10            # Emotion search with limit
+uv run bible --emotions                  # List 87 searchable emotions
+uv run bible-chat --persona companion    # Chat with AI agent
+uv run bible-serve                       # API on port 8010
 ```
+
+## API Endpoints
+
+| Endpoint | Method | Description | Requires Ollama |
+|----------|--------|-------------|-----------------|
+| `/emotions` | GET | List 87 searchable emotion terms | No |
+| `/emotions/{emotion}?limit=10` | GET | Search by emotion | No |
+| `/verses/search?query=...&limit=5` | GET | Semantic search | Yes |
+| `/verses/{reference}` | GET | Get specific verse | No |
+| `/chat` | POST | Chat with AI agent | Yes (+ Anthropic) |
+| `/health` | GET | Health check | No |
 
 ## Environment
 
@@ -95,7 +109,18 @@ from bible_toolkit.core import BibleClient
 
 client = BibleClient()
 
-# Semantic search
+# Emotion search (no Ollama required) - recommended starting point
+verses = client.search_by_emotion("depression", limit=5)  # → sorrow, despair, sadness...
+verses = client.search_by_emotion("anxious", limit=5)     # → anxiety, fear, worry...
+
+# See what an emotion expands to
+client.get_emotion_synonyms("depression")
+# → ['sorrow', 'despair', 'sadness', 'grief', 'discouragement', 'anguish']
+
+# List all 87 searchable emotions
+emotions = client.get_available_emotions()
+
+# Semantic search (requires Ollama)
 verses = client.search("feeling anxious", limit=5)
 
 # Get cross-references
@@ -103,7 +128,4 @@ xrefs = client.get_cross_references("Philippians 4:6")
 
 # Get book metadata
 book = client.get_book("Philippians")
-
-# Search by emotion (after enrichment)
-verses = client.search_by_emotion("hope", limit=10)
 ```

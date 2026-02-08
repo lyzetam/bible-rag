@@ -14,16 +14,15 @@ if env_file.exists():
 # Ollama on Mac Studio (128GB)
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://ms3.landryzetam.net:11434")
 
-# Models available on Mac Studio (64GB)
-# qwen3-vl:32b (20.9GB), gemma3:27b (17.4GB), gpt-oss:20b (13.8GB)
-# deepseek-r1:14b (9GB), gemma3:4b (3.3GB), gemma3:1b (0.8GB)
+# Models available on Mac Studio (128GB)
+# qwen3-vl:32b (21GB), gemma3:27b (17GB), gpt-oss:20b (14GB), glm-4.7-flash (19GB)
 MODELS = {
     # Large model for complex generation (book summaries, verse insights)
     "large": "gemma3:27b",
     # Medium model for moderate tasks (chapter summaries)
     "medium": "gemma3:27b",
     # Small/fast model for classification (emotion tagging)
-    "small": "gemma3:4b",
+    "small": "glm-4.7-flash",
     # Embedding model (needs to be pulled: ollama pull nomic-embed-text)
     "embedding": "nomic-embed-text",
 }

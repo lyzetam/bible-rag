@@ -20,7 +20,7 @@ The client uses these environment variables (all optional with defaults):
 |----------|---------|-------------|
 | `SUPABASE_URL` | Hosted instance | Supabase project URL |
 | `SUPABASE_KEY` | Hosted key | Supabase anon key |
-| `OLLAMA_URL` | `http://10.85.30.20:11434` | Ollama server for embeddings |
+| `OLLAMA_URL` | `http://ms3.landryzetam.net:11434` | Ollama server for embeddings |
 
 ---
 

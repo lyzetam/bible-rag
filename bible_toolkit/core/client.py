@@ -26,7 +26,7 @@ BIBLE_SUPABASE_KEY_DEFAULT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd
 
 SUPABASE_URL = os.getenv("BIBLE_SUPABASE_URL", BIBLE_SUPABASE_URL_DEFAULT)
 SUPABASE_KEY = os.getenv("BIBLE_SUPABASE_KEY", BIBLE_SUPABASE_KEY_DEFAULT)
-OLLAMA_URL = os.getenv("BIBLE_OLLAMA_URL") or os.getenv("OLLAMA_URL", "http://10.85.30.20:11434")
+OLLAMA_URL = os.getenv("BIBLE_OLLAMA_URL") or os.getenv("OLLAMA_URL", "http://ms3.landryzetam.net:11434")
 
 # Map common search terms to actual emotion tags in the database
 EMOTION_SYNONYMS = {

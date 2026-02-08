@@ -309,7 +309,7 @@ curl http://localhost:11434/api/tags
 ollama list | grep nomic-embed-text
 
 # Set correct URL if remote
-export OLLAMA_URL=http://10.85.30.20:11434
+export OLLAMA_URL=http://ms3.landryzetam.net:11434
 ```
 
 ### "Supabase query failed"

@@ -11,8 +11,8 @@ if env_file.exists():
             key, value = line.split("=", 1)
             os.environ.setdefault(key.strip(), value.strip())
 
-# Ollama on Mac Studio (64GB)
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://10.85.30.20:11434")
+# Ollama on Mac Studio (128GB)
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://ms3.landryzetam.net:11434")
 
 # Models available on Mac Studio (64GB)
 # qwen3-vl:32b (20.9GB), gemma3:27b (17.4GB), gpt-oss:20b (13.8GB)

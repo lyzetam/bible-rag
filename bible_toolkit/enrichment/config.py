@@ -22,7 +22,7 @@ MODELS = {
     # Medium model for moderate tasks (chapter summaries)
     "medium": "gemma3:27b",
     # Small/fast model for classification (emotion tagging)
-    "small": "glm-4.7-flash",
+    "small": "gpt-oss:20b",
     # Embedding model (needs to be pulled: ollama pull nomic-embed-text)
     "embedding": "nomic-embed-text",
 }

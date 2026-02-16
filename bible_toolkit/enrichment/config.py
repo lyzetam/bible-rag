@@ -27,9 +27,9 @@ MODELS = {
     "embedding": "nomic-embed-text",
 }
 
-# Supabase - Bible project
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rehpmoxczibgkwcawelo.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlaHBtb3hjemliZ2t3Y2F3ZWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyOTM3NTksImV4cCI6MjA4NDg2OTc1OX0.TW6ukZSPs0GqhwiuffIQU-acrdgTjJzToq8d1htgW_g")
+# Supabase - Bible project (set in .env)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # Batch processing
 BATCH_SIZE = 10

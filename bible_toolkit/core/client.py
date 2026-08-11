@@ -21,7 +21,14 @@ if env_file.exists():
 # Bible Supabase config - use BIBLE_* prefix to avoid conflicts with other Supabase projects
 SUPABASE_URL = os.getenv("BIBLE_SUPABASE_URL") or os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("BIBLE_SUPABASE_KEY") or os.getenv("SUPABASE_KEY")
-OLLAMA_URL = os.getenv("BIBLE_OLLAMA_URL") or os.getenv("OLLAMA_URL", "http://ms3.landryzetam.net:11434")
+OLLAMA_URL = os.getenv("BIBLE_OLLAMA_URL") or os.getenv(
+    "OLLAMA_URL", "http://apisix.apisix.svc.cluster.local:9080"
+)
+# The APISIX gateway in front of the Ollama fleet requires key-auth: a keyless
+# call returns 401 and the embedding never happens. Empty key -> no header, so
+# this still works when pointed straight at a bare Ollama node.
+OLLAMA_API_KEY = os.getenv("BIBLE_OLLAMA_API_KEY") or os.getenv("OLLAMA_API_KEY", "")
+OLLAMA_HEADERS = {"apikey": OLLAMA_API_KEY} if OLLAMA_API_KEY.strip() else {}
 
 # Map common search terms to actual emotion tags in the database
 EMOTION_SYNONYMS = {
@@ -357,6 +364,7 @@ class BibleClient:
         response = httpx.post(
             f"{self.ollama_url}/api/embed",
             json={"model": "nomic-embed-text", "input": text},
+            headers=OLLAMA_HEADERS,
             timeout=30,
         )
         response.raise_for_status()
@@ -367,6 +375,7 @@ class BibleClient:
         response = httpx.post(
             f"{self.ollama_url}/api/embed",
             json={"model": "nomic-embed-text", "input": texts},
+            headers=OLLAMA_HEADERS,
             timeout=60,
         )
         response.raise_for_status()
